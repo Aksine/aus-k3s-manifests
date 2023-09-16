@@ -1,0 +1,53 @@
+image:
+  repository: tomsquest/docker-radicale
+  tag: 3.1.8.3
+service:
+  main:
+    ports:
+      http:
+        port: 5232
+ingress:
+  main:
+    enabled: true
+    #ingressClassName: external
+
+    hosts:
+      - host: radicale.aksine.lcl
+        paths:
+          - path: /
+
+configMaps:
+  config:
+    enabled: true
+    name: radicale-config
+    data:
+      config.cfg: |
+        [server]
+        hosts = 0.0.0.0:5232
+
+        [auth]
+        type = htpasswd
+        htpasswd_filename = /config/secret/users
+        htpasswd_encryption = bcrypt
+
+        [storage]
+        filesystem_folder = /data/collections
+persistence:
+  config:
+    enabled: true
+    type: configMap
+    name: radicale-config
+    subPath: config.cfg
+    mountPath: /config/config
+    readOnly: true
+  data:
+    enabled: true
+    existingClaim: radicale-pvc
+    mountPath: /data
+  secret:
+    enabled: true
+    type: custom
+    mountPath: /config/secret
+    volumeSpec:
+      secret:
+        secretName: radicale-secret
