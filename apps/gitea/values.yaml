@@ -1,0 +1,45 @@
+ingress:
+  enabled: true
+  # className: nginx
+  hosts:
+    - host: git.aksine.lcl
+      paths:
+        - path: /
+          pathType: Prefix
+persistence:
+  enabled: true
+  create: false
+  claimName: gitea-pvc
+
+  
+redis-cluster:
+  enabled: false
+postgresql:
+  enabled: false
+postgresql-ha:
+  enabled: false
+gitea:
+  config:
+    repository:
+      ROOT: /data/git/repositories
+    server:
+      APP_DATA_PATH: /data/gitea
+      ROOT_URL: https://git.aksine.lcl
+    database: 
+      DB_TYPE: sqlite3
+      ## Note that the intit script checks to see if the IP & port of the database service is accessible, so make sure you set those to something that resolves as successful (since sqlite uses files on disk setting the port & ip won't affect the running of gitea).
+      HOST: git.aksine.lcl:80
+    session:
+      PROVIDER: memory
+    cache:
+      ADAPTER: memory
+    queue:
+      TYPE: level
+
+
+
+postgresql:
+  enabled: false
+  persistence:
+    enabled: false
+    existingClaim: gitea-pvc
