@@ -1,0 +1,70 @@
+# Default values for homebox.
+# This is a YAML-formatted file.
+
+# Namespace to use.
+namespace: default
+
+# Replica's to Deploy.
+replicaCount: 1
+
+www:
+  enabled: true
+  image: "phpipam/phpipam-www"
+  pullPolicy: Always
+  tag: "v1.5.2"
+
+
+cron:
+  enabled: true
+  interval: "5m"
+  image: "phpipam/phpipam-cron"
+  tag: "v1.5.2"
+  pullPolicy: Always
+
+# Overrides.
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+
+ingress:
+  enabled: true
+  className: ""
+  tls: []
+
+  hosts:
+    - host: ipam.aksine.lcl
+      paths:
+        - path: /
+          pathType: Prefix
+
+
+## MariaDB chart configuration
+## https://github.com/bitnami/charts/blob/main/bitnami/mariadb/values.yaml
+##
+mariadb:
+  enabled: false
+
+
+## External database configuration
+##
+externalDatabase:
+  ## @param externalDatabase.existingSecret Name of the database existing Secret Object
+  ## NOTE: When it's set, the `externalDatabase.password` parameter is ignored
+  ##
+  existingSecret: "ipam-mysql-secret"
+  ## @param externalDatabase.host Host of the existing database
+  ##
+  host: ipam-mysql
+  ## @param externalDatabase.port Port of the existing database
+  ##
+  port: 3306
+  ## @param externalDatabase.user Existing username in the external db
+  ##
+  user: root
+  ## @param externalDatabase.password Password for the above username
+  ##
+  password: ""
+  ## @param externalDatabase.database Name of the existing database
+  ##
+  database: phpipam
