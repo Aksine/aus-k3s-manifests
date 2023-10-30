@@ -45,17 +45,18 @@ persistence:
     enabled: true
     type: configMap
     name: radicale-config
-    subPath: config.cfg
-    mountPath: /config/config
-    readOnly: true
+    globalMounts:
+      - path: /config/config
+        subPath: config.cfg
+        readOnly: true
   data:
     enabled: true
     existingClaim: radicale-pvc
-    mountPath: /data
+    globalMounts:
+      - path: /data
   secret:
     enabled: true
-    type: custom
-    mountPath: /config/secret
-    volumeSpec:
-      secret:
-        secretName: radicale-secret
+    type: secret
+    name: radicale-secret
+    globalMounts:
+      - path: /config/secret
