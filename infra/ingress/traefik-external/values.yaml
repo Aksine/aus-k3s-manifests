@@ -9,7 +9,7 @@ deployment:
   # -- Deployment or DaemonSet
   kind: Deployment
   # -- Number of pods of the deployment (only applies when kind == Deployment)
-  replicas: 3
+  replicas: 4
 
   annotations: {}
   # -- Additional deployment labels (e.g. for filtering deployment by custom labels)
@@ -82,7 +82,8 @@ providers:
     allowExternalNameServices: true
     allowEmptyServices: false
     ingressClass: traefik-ext
-    namespaces: []
+    namespaces:
+      - "traefik"
       # - "default"
 
   kubernetesIngress:
@@ -90,7 +91,8 @@ providers:
     allowExternalNameServices: true
     allowEmptyServices: false
     ingressClass: traefik-ext
-    namespaces: []
+    namespaces:
+      - "traefik"
       # - "default"
     # IP used for Kubernetes Ingress endpoints
     publishedService:

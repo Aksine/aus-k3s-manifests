@@ -9,7 +9,7 @@ deployment:
   # -- Deployment or DaemonSet
   kind: Deployment
   # -- Number of pods of the deployment (only applies when kind == Deployment)
-  replicas: 3
+  replicas: 4
 
   annotations: {}
   # -- Additional deployment labels (e.g. for filtering deployment by custom labels)
@@ -88,7 +88,8 @@ providers:
     # ingressClass: traefik-internal
     # labelSelector: environment=production,method=traefik
     # -- Array of namespaces to watch. If left empty, Traefik watches all namespaces.
-    namespaces: []
+     namespaces:
+      - "traefik"
       # - "default"
 
   kubernetesIngress:
@@ -101,7 +102,8 @@ providers:
     # ingressClass: traefik-internal
     # labelSelector: environment=production,method=traefik
     # -- Array of namespaces to watch. If left empty, Traefik watches all namespaces.
-    namespaces: []
+    namespaces:
+      - "traefik"
       # - "default"
     # IP used for Kubernetes Ingress endpoints
     publishedService:
