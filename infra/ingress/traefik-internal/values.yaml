@@ -162,7 +162,7 @@ ports:
     # Added in 2.2, you can make permanent redirects via entrypoints.
     # https://docs.traefik.io/routing/entrypoints/#redirection
     redirectTo: 
-          ports: websecure
+          port: websecure
     #
     # Trust forwarded  headers information (X-Forwarded-*).
     # forwardedHeaders:
