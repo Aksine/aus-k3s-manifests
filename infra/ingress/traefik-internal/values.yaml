@@ -88,7 +88,7 @@ providers:
     # ingressClass: traefik-internal
     # labelSelector: environment=production,method=traefik
     # -- Array of namespaces to watch. If left empty, Traefik watches all namespaces.
-     namespaces:
+    namespaces:
       - "traefik"
       # - "default"
 
