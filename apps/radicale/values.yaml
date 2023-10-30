@@ -1,6 +1,11 @@
-image:
-  repository: tomsquest/docker-radicale
-  tag: 3.1.8.3
+controllers:
+  main:
+    strategy: Recreate
+    containers:
+      main:
+        image:
+          repository: tomsquest/docker-radicale
+          tag: 3.1.8.3
 service:
   main:
     ports:
@@ -15,6 +20,9 @@ ingress:
       - host: radicale.aksine.lcl
         paths:
           - path: /
+            service:
+              name: main
+              port: http
 
 configMaps:
   config:

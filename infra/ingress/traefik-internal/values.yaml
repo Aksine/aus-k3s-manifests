@@ -88,8 +88,8 @@ providers:
     # ingressClass: traefik-internal
     # labelSelector: environment=production,method=traefik
     # -- Array of namespaces to watch. If left empty, Traefik watches all namespaces.
-    namespaces:
-      - "traefik"
+    namespaces: []
+
       # - "default"
 
   kubernetesIngress:
@@ -102,8 +102,7 @@ providers:
     # ingressClass: traefik-internal
     # labelSelector: environment=production,method=traefik
     # -- Array of namespaces to watch. If left empty, Traefik watches all namespaces.
-    namespaces:
-      - "traefik"
+    namespaces: []
       # - "default"
     # IP used for Kubernetes Ingress endpoints
     publishedService:
