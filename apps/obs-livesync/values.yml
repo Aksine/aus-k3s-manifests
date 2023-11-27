@@ -1,0 +1,92 @@
+controllers:
+  main:
+    strategy: Recreate
+    containers:
+      main:
+        image:
+          repository: couchdb
+          tag: latest
+          pullPolicy: IfNotPresent
+        env:
+          COUCHDB_USER:
+            valueFrom:
+              secretKeyRef:
+                name: obsidian-couchdb-secret
+                key: couchdb-user
+          COUCHDB_PASSWORD:
+            valueFrom:
+              secretKeyRef:
+                name: obsidian-couchdb-secret
+                key: couchdb-password
+
+
+persistence:
+  data:
+    enabled: true
+    type: persistentVolumeClaim
+    existingClaim: obs-pvc
+    advancedMounts:
+      main:
+        main:
+          - path: /opt/couchdb/data
+
+  config:
+    enabled: true
+    type: configMap
+    name: conf
+    advancedMounts:
+      main:
+        init-config:
+          - path: /tmp/config
+  config-storage:
+    enabled: true
+    type: emptyDir
+    globalMounts:
+      - path: /opt/couchdb/etc/default.d
+configMaps:
+  conf:
+    data:
+      local.ini: |
+        [couchdb]
+        single_node = true
+        max_document_size = 50000000
+
+        [chttpd]
+        require_valid_user = true
+        max_http_request_size = 4294967296
+        enable_cors = true
+
+        [chttpd_auth]
+        require_valid_user = true
+        authentication_redirect = /_utils/session.html
+
+        [httpd]
+        WWW-Authenticate = Basic realm="couchdb"
+        bind_address = 0.0.0.0
+
+        [cors]
+        origins = app://obsidian.md, capacitor://localhost, http://localhost
+        credentials = true
+        headers = accept, authorization, content-type, origin, referer
+        methods = GET, PUT, POST, HEAD, DELETE
+        max_age = 3600
+service:
+  main:
+    ports:
+      http:
+        port: 5984
+ingress:
+  main:
+    enabled: true
+    className: traefik-ext
+    hosts:
+      - host: obs-livesync.aksine-am.com
+        paths:
+          - path: /
+            service:
+              name: main
+              port: http
+    tls:
+      - secretName: aksine-am-com-tls
+        hosts:
+          - obs-livesync.aksine-am.com
