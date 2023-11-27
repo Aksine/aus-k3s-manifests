@@ -11,12 +11,12 @@ controllers:
           COUCHDB_USER:
             valueFrom:
               secretKeyRef:
-                name: obsidian-couchdb-secret
+                name: obs-secret
                 key: couchdb-user
           COUCHDB_PASSWORD:
             valueFrom:
               secretKeyRef:
-                name: obsidian-couchdb-secret
+                name: obs-secret
                 key: couchdb-password
 
 
