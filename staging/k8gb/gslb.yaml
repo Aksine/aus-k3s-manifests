@@ -1,0 +1,26 @@
+apiVersion: k8gb.absa.oss/v1beta1
+kind: Gslb
+metadata:
+  name: test-gslb-failover
+  annotations:
+    k8gb.io/external-ip: "1.52.6.1"
+spec:
+  ingress:
+    ingressClassName: traefik-int
+    rules:
+      - host: test.blogtest.aksine-am.com
+        http:
+          paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: hugo # This should point to Service name of testing application
+                port:
+                  name: http
+
+  strategy:
+    dnsTtlSeconds: 60 # Minimum for non-Enterprise Cloudflare https://developers.cloudflare.com/dns/manage-dns-records/reference/ttl/
+    primaryGeoTag: aus
+    splitBrainThresholdSeconds: 300
+    type: failover

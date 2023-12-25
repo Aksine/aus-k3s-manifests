@@ -18,7 +18,16 @@ controllers:
               secretKeyRef:
                 name: obs-secret
                 key: couchdb-password
-
+    initContainers:
+      init-config:
+        image:
+          repository: public.ecr.aws/docker/library/busybox
+          tag: latest@sha256:3fbc632167424a6d997e74f52b878d7cc478225cffac6bc977eedfe51c7f4e79
+          pullPolicy: IfNotPresent
+        command:
+          - "/bin/sh"
+          - "-c"
+          - "cp /tmp/config/*.ini /opt/couchdb/etc/default.d/; ls -lrt /opt/couchdb/etc/default.d;"
 
 persistence:
   data:
@@ -33,7 +42,7 @@ persistence:
   config:
     enabled: true
     type: configMap
-    name: conf
+    name: obs-livesync-conf
     advancedMounts:
       main:
         init-config:
@@ -47,29 +56,29 @@ configMaps:
   conf:
     data:
       local.ini: |
-        [couchdb]
-        single_node = true
-        max_document_size = 50000000
+          [couchdb]
+          single_node = true
+          max_document_size = 50000000
 
-        [chttpd]
-        require_valid_user = true
-        max_http_request_size = 4294967296
-        enable_cors = true
+          [chttpd]
+          require_valid_user = true
+          bind_address = any
+          max_http_request_size = 4294967296
 
-        [chttpd_auth]
-        require_valid_user = true
-        authentication_redirect = /_utils/session.html
+          [chttpd_auth]
+          require_valid_user = true
+          authentication_redirect = /_utils/session.html
 
-        [httpd]
-        WWW-Authenticate = Basic realm="couchdb"
-        bind_address = 0.0.0.0
+          [httpd]
+          WWW-Authenticate = Basic realm="couchdb"
+          enable_cors = true
 
-        [cors]
-        origins = app://obsidian.md, capacitor://localhost, http://localhost
-        credentials = true
-        headers = accept, authorization, content-type, origin, referer
-        methods = GET, PUT, POST, HEAD, DELETE
-        max_age = 3600
+          [cors]
+          origins = app://obsidian.md,capacitor://localhost,http://localhost
+          credentials = true
+          headers = accept, authorization, content-type, origin, referer
+          methods = GET, PUT, POST, HEAD, DELETE
+          max_age = 3600
 service:
   main:
     ports:
